@@ -170,7 +170,7 @@ const homeLoad = (data, emailEnable) => {
   } else{
     Email.required = false;
     Email.disabled = true;
-    Email.placeholder = "Email option temporarily Disabled."
+    Email.placeholder = "Email Option Temporarily Disabled."
   }
 
   document.forms["secure-message-form"].onsubmit = async (e) => {
