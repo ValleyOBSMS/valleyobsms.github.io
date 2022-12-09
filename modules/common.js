@@ -30,7 +30,7 @@ const searchLoad = (data, callback, indexs, type = null) => {
 };
 
 // sortin load
-const sortingLoad = (index, data, type, callback, res = null) => {
+const sortingLoad = (index, data, type, callback, res = null, page) => {
   let sortingBtn = document.querySelector("#sortingBtn");
   let loading = document.querySelector("#loading");
   sortingBtn.onclick = () => {
@@ -61,10 +61,10 @@ const sortingLoad = (index, data, type, callback, res = null) => {
         data = data.reverse();
       }
 
-      if (res === null) callback(data, type);
+      if (res === null) callback(data, type, page);
       else {
         res.data = data;
-        callback(res, type);
+        callback(res, type, page);
       }
     }
   };

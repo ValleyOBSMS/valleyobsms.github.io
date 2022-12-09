@@ -1,5 +1,6 @@
 import { d } from "../../asset/js/custom.lib.js";
 import { commonLoad, searchLoad, sortingLoad, download } from "./common.js";
+import IDB from "../../asset/js/idb.js";
 const { PDFDocument, StandardFonts } = PDFLib;
 
 const historyPage = `
@@ -84,6 +85,8 @@ const historyPage = `
     </main>
   </section>
   <!-- wrapper -->
+
+  <div id="pagination-short"></div>
 
   <div style="" id="loading">
     <div class="spinner">
@@ -180,20 +183,43 @@ const createPdf = async (obj) => {
   return pdfBytes;
 };
 
-const showData = (data, type = "") => {
+const showData = (Data, type = "", page) => {
+  let data;
+  let num = 0;
+  let index = 0;
+  if (page == undefined) {
+    $("#pagination-short").html("");
+    let lastPage = Math.floor(Data.length / 50);
+    if (lastPage != Data.length) {
+      lastPage++;
+    }
+    $("#pagination-short").materializePagination({
+      align: "center",
+      lastPage: lastPage,
+      firstPage: 1,
+      useUrlParameter: false,
+      onClickCallback: function (requestedPage) {
+        showData(Data, type, requestedPage);
+      },
+    });
+    data = Data.slice(0, 50);
+  } else {
+    num = (page - 1) * 50;
+    index = (page - 1) * 50;
+    data = Data.slice(num , num + 50);
+  }
+
   const { dateCovert } = d;
   let table = document.querySelector(".custom-table");
   let loading = document.querySelector("#loading");
   let result = "";
-  let index = 0;
   let idList = [];
-  let num = 0;
   for (let x of data) {
-    console.log(x);
+    // console.log(x);
     num++;
     idList.push({
       index,
-      name: x[2].substr(1),
+      name: x[2].substr(1) ? x[2].substr(1) : x[1].substr(1),
       obj: {
         "Date & Time": `${dateCovert(x[0])}  ${getTime(x[0])}`,
         Email: x[1].substr(1),
@@ -216,7 +242,7 @@ const showData = (data, type = "") => {
     )}</span></td>
       <td>${x[1].substr(1)}</td>
       <td>${x[2].substr(1)}</td>
-      <td>${x[3].substr(1)}</td>
+      <td>${x[3].substr(1).substr(0, 30) + "..."}</td>
       <td class="text-center">
         ${exportField}
       </td>
@@ -247,10 +273,19 @@ const showData = (data, type = "") => {
   }
   table.style.display = "table";
   loading.style.display = "none";
-  sortingLoad(2, data, type, showData);
+  sortingLoad(2, data, type, showData, null, page);
 };
 
-const historyLoad = () => {
+const historyLoad = async () => {
+  const idb = new IDB("com.valleyobSMSApp");
+  await idb.createDataBase(d.userEmail, {
+    keyPath: "id",
+  });
+
+  let data = await idb.getAllValues("value");
+  // console.log(data);
+  let oldTime = data.length ? data[data.length - 1][0] : "";
+
   const { post, GAS, database, history } = d;
   commonLoad();
   post(GAS, {
@@ -258,13 +293,42 @@ const historyLoad = () => {
     data: JSON.stringify({
       database: database,
       history: history,
+      oldLength: data.length,
+      oldTime,
     }),
   })
     .then(async (res) => {
       res = JSON.parse(JSON.parse(res).messege);
       if (res.result) {
-        showData(res.data);
-        searchLoad(res.data, showData, [1, 2, 3]);
+        let resData = res.data;
+        const finalData = [];
+        resData.forEach((element) => {
+          finalData.push({
+            id: element[0] + element[1] + element[2],
+            value: element,
+          });
+        });
+
+        if (res.type != "update") {
+          await idb.delete();
+          await idb.createDataBase(d.userEmail, {
+            keyPath: "id",
+          });
+        }
+        if (finalData.length) await idb.add(finalData);
+        data = await idb.getAllValues("value");
+
+        const renderData = [];
+        data.forEach(async (v) => {
+          if (res.now - v[0] > d.history * 24 * 60 * 60 * 1000) {
+            await idb.remove(v[4]);
+          } else {
+            renderData.push(v);
+          }
+        });
+
+        showData(renderData);
+        searchLoad(renderData, showData, [1, 2, 3]);
       } else {
         console.log(res);
       }

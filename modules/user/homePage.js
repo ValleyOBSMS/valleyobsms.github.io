@@ -79,7 +79,7 @@ const homePage = `
                 <div class="col-md-6">
                   <div class="mdl-input-bx">
                     <label>Phone Number</label>
-                    <input oninput="inputPrevent(event)" type="text"  name="" id="Phone" class="form-control" autocomplete="off" required placeholder="Copy & paste only"/>
+                    <input oninput="inputPrevent(event)" type="text"  name="" id="Phone" class="form-control" autocomplete="off" placeholder="Copy & paste only"/>
                   </div>
                 </div>
               </div>
@@ -164,11 +164,9 @@ const homeLoad = (data, emailEnable) => {
   let loading = document.querySelector("#loading");
 
   if(emailEnable){
-    Email.required = true;
     Email.disabled = false;
     Email.placeholder = "Copy & paste only"
   } else{
-    Email.required = false;
     Email.disabled = true;
     Email.placeholder = "Email Option Temporarily Disabled."
   }
@@ -181,16 +179,31 @@ const homeLoad = (data, emailEnable) => {
     error.style.display = "none";
 
     if(emailEnable){
-      if(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(Email.value) == false){
+      if(Email.value.trim() == "" && Phone.value.trim() == ""){
+        error.style.display = "block";
+        error.innerText = "Email or Phone No. Required.";
+        return;
+      }
+
+      if(Email.value.trim() != "" && /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(Email.value.trim()) == false){
         error.style.display = "block";
         error.innerText = "Valid Email Required.";
         return;
       }
-    }
 
-    if(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(Phone.value) == false){
+      if(Phone.value.trim() != "" && /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(Phone.value.trim()) == false){
+        error.style.display = "block";
+        error.innerText = "Valid Phone No. Required.";
+        return;
+      }
+
+    } else if(Phone.value.trim() != "" && /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(Phone.value.trim()) == false){
       error.style.display = "block";
       error.innerText = "Valid Phone No. Required.";
+      return;
+    } else{
+      error.style.display = "block";
+      error.innerText = "Phone No. Required.";
       return;
     }
 
@@ -203,8 +216,8 @@ const homeLoad = (data, emailEnable) => {
       type: 16,
       data: JSON.stringify({
         time: "",
-        email: Email.value,
-        phone: Phone.value,
+        email: Email.value.trim(),
+        phone: Phone.value.trim(),
         sms: custom_message.value,
         database: database,
       }),

@@ -118,6 +118,7 @@ const loginLoad = () => {
       const { result, data, messege, history, emailEnable } = res;
       if (result && messege != "ip") {
         document.querySelector("#root").innerHTML = homePage;
+        d.userEmail = username.value.trim();
         d.database = messege;
         d.history = history;
         d.emailEnable = emailEnable;

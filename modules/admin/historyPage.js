@@ -124,14 +124,36 @@ const getTime = (date) => {
   );
 };
 
-const showData = ({ user, database, data }, type = "") => {
+const showData = ({ user, database, Data }, type = "", page) => {
+  let data;
+  let num = 0;
+  let index = 1;
+  if(page == undefined){
+    $("#pagination-short").html("");
+    let lastPage = Math.floor(Data.length/50);
+    if(lastPage != Data.length){
+      lastPage++;
+    }
+    $("#pagination-short").materializePagination({
+      align: "center",
+      lastPage: lastPage,
+      firstPage: 1,
+      useUrlParameter: false,
+      onClickCallback: function (requestedPage) {
+        showData(Data, type, requestedPage);
+      },
+    });
+    data = Data.slice(0, 50)
+  } else{
+    num = (page - 1) * 50;
+    index = (page - 1) * 50 + 1;
+    data = Data.slice(num , num + 50);
+  }
   const { dateCovert } = d;
   const { post, GAS } = d;
   let table = document.querySelector(".custom-table");
   let loading = document.querySelector("#loading");
   let result = "";
-  let index = 1;
-  let num = 0;
   let idList = [];
   for (let x of data) {
     num++;
@@ -156,7 +178,7 @@ const showData = ({ user, database, data }, type = "") => {
     )}</span></td>
       <td>${x[1].substr(1)}</td>
       <td>${x[2].substr(1)}</td>
-      <td>${x[3].substr(1)}</td>
+      <td>${x[3].substr(1).substr(0, 30) + "..."}</td>
       <td class="text-center">
         ${exportField}
       </td>
@@ -236,7 +258,7 @@ const showData = ({ user, database, data }, type = "") => {
     searchLoad(res.data, showData, [1, 2, 3], res);
     document.querySelector("#search").value = "";
   };
-  sortingLoad(2, data, type, showData, { user, database, data });
+  sortingLoad(2, data, type, showData, { user, database, data }, page);
 };
 
 const historyLoad = (database) => {
