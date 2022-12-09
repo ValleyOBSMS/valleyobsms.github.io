@@ -124,7 +124,7 @@ const getTime = (date) => {
   );
 };
 
-const showData = ({ user, database, Data }, type = "", page) => {
+const showData = ({ user, database, data: Data }, type = "", page) => {
   let data;
   let num = 0;
   let index = 1;
