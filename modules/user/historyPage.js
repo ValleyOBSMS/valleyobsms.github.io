@@ -327,6 +327,7 @@ const historyLoad = async () => {
           }
         });
 
+        renderData.sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
         showData(renderData);
         searchLoad(renderData, showData, [1, 2, 3]);
       } else {
