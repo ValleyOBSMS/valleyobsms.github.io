@@ -101,6 +101,8 @@ const historyPage = `
   </section>
   <!-- wrapper -->
 
+ <div id="pagination-short"></div>
+
   <div style="" id="loading">
     <div class="spinner">
       <div class="rect1"></div>
@@ -140,7 +142,7 @@ const showData = ({ user, database, data: Data }, type = "", page) => {
       firstPage: 1,
       useUrlParameter: false,
       onClickCallback: function (requestedPage) {
-        showData(Data, type, requestedPage);
+        showData({ user, database, data: Data }, type, requestedPage);
       },
     });
     data = Data.slice(0, 50)

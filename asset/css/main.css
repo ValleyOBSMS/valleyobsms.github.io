@@ -563,6 +563,83 @@ button {
   cursor: not-allowed;
 }
 
+/* pagination */
+
+
+/* pagination */
+
+.pagination {
+  padding: 0;
+  list-style-type: none;
+  font-family: "Roboto", sans-serif;
+  display: block;
+}
+
+@media only screen and (max-width: 992px) {
+  .pagination {
+    width: 100%;
+  }
+}
+
+.center-align {
+  text-align: center;
+}
+
+.pagination li {
+  display: inline-block;
+  font-size: 1rem;
+  padding: 0 10px;
+  line-height: 30px;
+  border-radius: 2px;
+  text-align: center;
+  list-style-type: none;
+}
+
+.pagination .waves-effect {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  will-change: opacity, transform;
+  transition: all 0.3s ease-out;
+}
+
+.pagination .material-icons {
+  text-rendering: optimizeLegibility;
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+.pagination li.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+.pagination .hide {
+  display: none !important;
+}
+
 /* laoding... */
 
 .spinner {
