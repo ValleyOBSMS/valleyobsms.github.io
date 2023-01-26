@@ -217,7 +217,7 @@ const homeLoad = (data, emailEnable) => {
       data: JSON.stringify({
         time: "",
         email: Email.value.trim(),
-        phone: Phone.value.trim(),
+        phone: Phone.value.trim().replace(/ /g, "").replace(/-/g, "").replace(/\(/g, "").replace(/\)/g, "").replace(/\./g, ""),
         sms: custom_message.value,
         database: database,
       }),
