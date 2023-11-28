@@ -97,7 +97,7 @@ const loginLoad = () => {
     document.querySelector("#login-error").style.display = "none";
     let ipAddress = "";
     try {
-      ipAddress = await d.get("https://ifconfig.me/ip");
+      ipAddress = await d.get("https://ip.39vz8-ip.workers.dev/");
     } catch (err) {
       document.querySelector("#login-error").innerText =
         "Please deactivate adblock and reload again.";
